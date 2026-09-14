@@ -125,17 +125,25 @@ func createSession(uid uint32, remoteUser, remoteHost, tty string) (createSessio
 	if err != nil {
 		return createSessionResp{}, err
 	}
+	return parseCreateSessionResponse(call.Body)
+}
 
-	return createSessionResp{
-		sessionID:   call.Body[0].(string),
-		objectPath:  call.Body[1].(dbus.ObjectPath),
-		runtimePath: call.Body[2].(string),
-		fifoFD:      call.Body[3].(dbus.UnixFD),
-		uid:         call.Body[4].(uint32),
-		seatID:      call.Body[5].(string),
-		vtnr:        call.Body[6].(uint32),
-		existing:    call.Body[7].(bool),
-	}, nil
+func parseCreateSessionResponse(body []any) (createSessionResp, error) {
+	var resp createSessionResp
+	if err := dbus.Store(
+		body,
+		&resp.sessionID,
+		&resp.objectPath,
+		&resp.runtimePath,
+		&resp.fifoFD,
+		&resp.uid,
+		&resp.seatID,
+		&resp.vtnr,
+		&resp.existing,
+	); err != nil {
+		return createSessionResp{}, fmt.Errorf("decoding logind CreateSession response: %w", err)
+	}
+	return resp, nil
 }
 
 // releaseSession releases the session identified by sessionID.
