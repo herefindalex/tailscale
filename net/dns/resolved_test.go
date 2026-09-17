@@ -19,26 +19,26 @@ func TestResolvedManagerNameOwnerChangedSignal(t *testing.T) {
 		want   bool
 	}{
 		{
-			name: "nil signal",
+			name: "nil-signal",
 		},
 		{
-			name:   "empty body",
+			name:   "empty-body",
 			signal: nameOwnerChangedSignal(),
 		},
 		{
-			name:   "short body",
+			name:   "short-body",
 			signal: nameOwnerChangedSignal(dbusResolvedObject, "previous owner"),
 		},
 		{
-			name:   "long body",
+			name:   "long-body",
 			signal: nameOwnerChangedSignal(dbusResolvedObject, "previous owner", "new owner", "extra"),
 		},
 		{
-			name:   "wrong new owner type",
+			name:   "wrong-new-owner-type",
 			signal: nameOwnerChangedSignal(dbusResolvedObject, "previous owner", 123),
 		},
 		{
-			name: "wrong signal path",
+			name: "wrong-signal-path",
 			signal: &dbus.Signal{
 				Path: "/wrong/path",
 				Name: dbusInterface + "." + dbusOwnerSignal,
@@ -46,15 +46,15 @@ func TestResolvedManagerNameOwnerChangedSignal(t *testing.T) {
 			},
 		},
 		{
-			name:   "wrong bus name",
+			name:   "wrong-bus-name",
 			signal: nameOwnerChangedSignal("org.example.service", "previous owner", "new owner"),
 		},
 		{
-			name:   "resolved stopped",
+			name:   "resolved-stopped",
 			signal: nameOwnerChangedSignal(dbusResolvedObject, "previous owner", ""),
 		},
 		{
-			name:   "resolved restarted",
+			name:   "resolved-restarted",
 			signal: nameOwnerChangedSignal(dbusResolvedObject, "previous owner", "new owner"),
 			want:   true,
 		},
